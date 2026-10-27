@@ -1,0 +1,27 @@
+name: Prepare published release update
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact stable version already published to npm
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify published artifacts and prepare patch
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          python3 scripts/update-formula.py "$RELEASE_VERSION"
+          git diff --exit-code --quiet && { echo "Already current"; exit 0; }
+          git diff --binary > formula-update.patch
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reviewed-formula-update
+          path: formula-update.patch
+          if-no-files-found: ignore
