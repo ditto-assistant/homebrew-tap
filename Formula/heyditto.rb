@@ -15,6 +15,7 @@ class Heyditto < Formula
   def install
     node = Formula["node@24"]
     odie "Node 24.22.1 or newer in the 24.x line is required" if node.version < Version.new("24.22.1")
+    ENV.prepend_path "PATH", node.opt_bin
     resource("dependency-lock").stage { buildpath.install "package-lock.json" }
     # npm ci verifies the locked dependency integrity; never run lifecycle scripts.
     system node.opt_bin/"npm", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"
