@@ -54,9 +54,9 @@ Owner: Ditto CLI maintainers (Peyton Spencer); tracked by DITTO-1546.
 1. Finish the CLI semantic-release workflow and confirm the exact version exists
    on npm. Never update from an unmerged branch, anticipated version or tag alone.
 2. In a fresh tap branch run `python3 scripts/update-formula.py X.Y.Z`. It checks
-   npm SHA512, the published package metadata and its source lockfile, then pins
+   npm SHA512, the published package metadata, matching release tag and source lockfile, then pins
    source SHA256, lockfile SHA256, source commit and supported Node minimum.
-   It refuses changed executable layout, license or unsupported Node conventions.
+   Its checks remain active under Python optimization. It refuses changed executable layout, license or unsupported Node conventions; changed conventions require manual review even when semantically equivalent.
 3. Review the actual package changes, including updater ownership and any native
    dependency requirements. Install and run `brew test` and `brew audit`.
 4. Push a PR, wait for macOS/Linux install tests and Ditto Review, then merge at
