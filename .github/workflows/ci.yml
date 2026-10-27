@@ -1,0 +1,38 @@
+name: Formula validation
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  generator:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover -s tests -v
+      - run: python3 -O -m unittest discover -s tests -v
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04
+        with:
+          stable: true
+      - name: Install the candidate tap and exercise the installed binary
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+        run: |
+          git checkout --detach "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -f "$(brew --repository ditto-assistant/tap)/Formula/heyditto.rb"
+          brew install --build-from-source ditto-assistant/tap/heyditto
+          brew test ditto-assistant/tap/heyditto
+          brew audit --formula ditto-assistant/tap/heyditto
+          brew uninstall ditto-assistant/tap/heyditto
+          test ! -e "$(brew --prefix)/bin/heyditto"
