@@ -15,12 +15,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: Homebrew/actions/setup-homebrew@main
+      - uses: Homebrew/actions/setup-homebrew@d482da0e602890d3160aade42e72c8556103bf04
+        with:
+          stable: true
       - name: Install the candidate tap and exercise the installed binary
         env:
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
-          brew tap ditto-assistant/tap "$GITHUB_WORKSPACE"
+          git checkout --detach "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -f "$(brew --repository ditto-assistant/tap)/Formula/heyditto.rb"
           brew install --build-from-source ditto-assistant/tap/heyditto
           brew test ditto-assistant/tap/heyditto
           brew audit --formula ditto-assistant/tap/heyditto
