@@ -39,7 +39,7 @@ class Heyditto < Formula
     (testpath/"sample.txt").write "before\n"
     system "git", "add", "sample.txt"
     system "git", "commit", "--quiet", "-m", "fixture"
-    (testpath/"sample.txt").write "after\n"
+    (testpath/"sample.txt").atomic_write "after\n"
     # Fail closed if a future preview tries to use an account or network.
     (testpath/"deny-network.cjs").write <<~JS
       const deny = () => { throw new Error("network forbidden in offline preview"); };

@@ -43,8 +43,7 @@ configuration and Homebrew dependencies alone.
 Homebrew owns the installed files and upgrades. The launcher sets
 `HEYDITTO_INSTALL_METHOD=homebrew` and `HEYDITTO_NO_UPDATE=1`; `libexec/INSTALL_METHOD`
 also contains `homebrew`. CLI updater work under DITTO-1502 must honor this
-contract (or detect the Homebrew Cellar) and recommend `brew upgrade
- ditto-assistant/tap/heyditto` rather than run npm or write into the keg. Version
+contract (or detect the Homebrew Cellar) and recommend `brew upgrade ditto-assistant/tap/heyditto` rather than run npm or write into the keg. Version
 2.33.0 has no automatic package updater. Future releases must pass the offline
 checks and have their updater ownership reviewed before promotion.
 
